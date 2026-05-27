@@ -36,7 +36,7 @@ To run this tool on a Mac without affecting your system settings, you need **one
     ```bash
     docker build -t arabic-translator .
     ```
-2.  **Run the translator**:
+2.  **Run the translator**: 
     ```bash
     docker run -v $(pwd):/data arabic-translator --input /data/input.csv --output /data/results.csv
     ```
