@@ -1,18 +1,30 @@
 import glob
+import os
+import time
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Artifact structure: read run summaries from artifacts/runs/, write graphs to artifacts/reports/
+RUNS_GLOB = os.path.join("artifacts", "runs", "*", "summary.csv")
+REPORTS_DIR = os.path.join("artifacts", "reports")
+
 # ==========================================
 # 1. FIND AND LOAD ALL CSV FILES
 # ==========================================
-csv_files = glob.glob("benchmark_summary_*.csv")
+csv_files = glob.glob(RUNS_GLOB)
 
 if not csv_files:
-    print("Error: No 'benchmark_summary_*.csv' files found in the current directory.")
+    print(f"Error: No run summaries found at '{RUNS_GLOB}'.")
+    print("Run 'python run_benchmarks.py' first to generate benchmark data.")
     exit()
 
 print(f"Found {len(csv_files)} benchmark runs. Processing data...")
+
+# Create a timestamped folder for this report's graphs
+report_dir = os.path.join(REPORTS_DIR, time.strftime("%Y%m%d_%H%M%S"))
+os.makedirs(report_dir, exist_ok=True)
+print(f"Saving graphs to: {report_dir}")
 
 all_times = []
 rows_x = None
@@ -57,8 +69,9 @@ plt.grid(True, linestyle=":", alpha=0.7)
 if num_runs <= 10:
     plt.legend(fontsize=10)
 
-plt.savefig("graph_layered_runs.png", dpi=300, bbox_inches="tight")
-print(">>> Saved 'graph_layered_runs.png'")
+layered_path = os.path.join(report_dir, "graph_layered_runs.png")
+plt.savefig(layered_path, dpi=300, bbox_inches="tight")
+print(f">>> Saved '{layered_path}'")
 plt.close()
 
 # ==========================================
@@ -91,8 +104,9 @@ for i, txt in enumerate(avg_times):
         fontsize=9,
     )
 
-plt.savefig("graph_average_only.png", dpi=300, bbox_inches="tight")
-print(">>> Saved 'graph_average_only.png'")
+average_path = os.path.join(report_dir, "graph_average_only.png")
+plt.savefig(average_path, dpi=300, bbox_inches="tight")
+print(f">>> Saved '{average_path}'")
 plt.close()
 
 # ==========================================
@@ -128,8 +142,9 @@ for bar in bars:
         fontweight="bold",
     )
 
-plt.savefig("graph_etf_projection.png", dpi=300, bbox_inches="tight")
-print(">>> Saved 'graph_etf_projection.png'")
+etf_path = os.path.join(report_dir, "graph_etf_projection.png")
+plt.savefig(etf_path, dpi=300, bbox_inches="tight")
+print(f">>> Saved '{etf_path}'")
 plt.close()
 
 # ==========================================
@@ -172,8 +187,9 @@ if num_runs <= 10:
 # Zoom in slightly by limiting the Y-axis, otherwise the massive 10-row estimate ruins the scale
 plt.ylim(0, max(avg_etf_progression[1:]) * 1.5)
 
-plt.savefig("graph_etf_stabilization.png", dpi=300, bbox_inches="tight")
-print(">>> Saved 'graph_etf_stabilization.png'")
+stabilization_path = os.path.join(report_dir, "graph_etf_stabilization.png")
+plt.savefig(stabilization_path, dpi=300, bbox_inches="tight")
+print(f">>> Saved '{stabilization_path}'")
 plt.close()
 
 # ==========================================
@@ -219,8 +235,9 @@ for i, txt in enumerate(avg_rates):
             fontsize=9,
         )
 
-plt.savefig("graph_processing_rate.png", dpi=300, bbox_inches="tight")
-print(">>> Saved 'graph_processing_rate.png'")
+rate_path = os.path.join(report_dir, "graph_processing_rate.png")
+plt.savefig(rate_path, dpi=300, bbox_inches="tight")
+print(f">>> Saved '{rate_path}'")
 plt.close()
 
-print("\nDone! Check your project folder for the images.")
+print(f"\nDone! Check '{report_dir}' for the images.")

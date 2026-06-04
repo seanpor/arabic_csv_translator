@@ -20,3 +20,7 @@ docs/*.synctex.gz
 .ruff_cache/
 *.egg-info/
 .DS_Store
+.github/workflows/test.yml
+scripts/Benchmark_50.sh
+artifacts/runs/20260604_090817/meta.json
+/artifacts
