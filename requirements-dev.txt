@@ -3,3 +3,4 @@ yamllint
 pytest
 tqdm
 pandas
+matplotlib
